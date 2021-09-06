@@ -99,6 +99,7 @@ tabular_q_learning.train(training_episodes)
 
 Different algorithms require different arguments. See `agent.py` for more information.
 
+Furthermore, some unit tests have been implemented in folder `tests` to verify the proper functioning of the code.
 
 ## Status
 
