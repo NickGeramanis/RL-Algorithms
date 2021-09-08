@@ -1,4 +1,7 @@
 **/__pycache__
 venv/
+**/.pytest_cache
 .idea/
 *.log
+.coverage
+coverage-reports/

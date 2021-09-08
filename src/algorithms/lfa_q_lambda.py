@@ -4,18 +4,20 @@ import random
 import numpy as np
 from gym import Env
 
-from features.feature_constructor import FeatureConstructor
-from rl_algorithms.rl_algorithm import RLAlgorithm
+from src.features.feature_constructor import FeatureConstructor
+from src.algorithms.rl_algorithm import RLAlgorithm
 
 
-class LFASARSA(RLAlgorithm):
+class LFAQLambda(RLAlgorithm):
 
     def __init__(self, env: Env, learning_rate_midpoint: int,
                  discount_factor: float, initial_learning_rate: float,
                  learning_rate_steepness: float,
-                 feature_constructor: FeatureConstructor) -> None:
+                 feature_constructor: FeatureConstructor,
+                 lambda_: float) -> None:
         RLAlgorithm.__init__(self)
         self.__env = env
+        self.__lambda = lambda_
         self.__discount_factor = discount_factor
         self.__initial_learning_rate = initial_learning_rate
         self.__learning_rate_steepness = learning_rate_steepness
@@ -25,8 +27,9 @@ class LFASARSA(RLAlgorithm):
             (self.__feature_constructor.n_features,))
 
         self._logger.info(
-            'SARSA with Linear Function Approximation:'
+            'Q(lambda) with Linear Function Approximation:'
             f'discount factor = {self.__discount_factor},'
+            f'lambda = {self.__lambda},'
             f'learning rate midpoint = {self.__learning_rate_midpoint},'
             f'learning rate steepness = {self.__learning_rate_steepness},'
             f'initial learning rate = {self.__initial_learning_rate}')
@@ -53,6 +56,8 @@ class LFASARSA(RLAlgorithm):
 
             done = False
             current_state = self.__env.reset()
+            eligibility_traces = np.zeros(
+                (self.__feature_constructor.n_features,))
             current_q_values = self.__feature_constructor.calculate_q(
                 self.weights, current_state)
 
@@ -65,6 +70,7 @@ class LFASARSA(RLAlgorithm):
                 next_state, reward, done, _ = self.__env.step(current_action)
                 episode_reward += reward
                 episode_actions += 1
+
                 next_q_values = self.__feature_constructor.calculate_q(
                     self.weights, next_state)
 
@@ -72,6 +78,11 @@ class LFASARSA(RLAlgorithm):
                     next_action = self.__env.action_space.sample()
                 else:
                     next_action = np.argmax(next_q_values)
+
+                if next_q_values[next_action] == np.max(next_q_values):
+                    best_action = next_action
+                else:
+                    best_action = np.argmax(next_q_values)
 
                 if done:
                     td_target = reward
@@ -81,10 +92,17 @@ class LFASARSA(RLAlgorithm):
 
                 td_error = td_target - current_q_values[current_action]
 
-                self.weights += (
-                    learning_rate * td_error
-                    * self.__feature_constructor.get_features(
-                        current_state, current_action))
+                if best_action == next_action:
+                    eligibility_traces = (
+                        self.__discount_factor
+                        * self.__lambda * eligibility_traces
+                        + self.__feature_constructor.get_features(
+                            current_state, current_action))
+                else:
+                    eligibility_traces = np.zeros(
+                        (self.__feature_constructor.n_features,))
+
+                self.weights += learning_rate * td_error * eligibility_traces
 
                 current_state = next_state
                 current_action = next_action
@@ -93,7 +111,7 @@ class LFASARSA(RLAlgorithm):
             self._logger.info(f'episode={episode_i}|reward={episode_reward}'
                               f'|actions={episode_actions}')
 
-    def run(self, episodes: int, render: bool = False):
+    def run(self, episodes: int, render: bool = False) -> None:
         for episode_i in range(episodes):
             episode_reward = 0.0
             episode_actions = 0

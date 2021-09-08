@@ -2,7 +2,7 @@ import itertools
 
 import numpy as np
 
-from features.feature_constructor import FeatureConstructor
+from src.features.feature_constructor import FeatureConstructor
 
 
 class Polynomials(FeatureConstructor):

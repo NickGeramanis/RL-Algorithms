@@ -4,7 +4,7 @@ import math
 import numpy as np
 from gym.spaces import Box
 
-from features.feature_constructor import FeatureConstructor
+from src.features.feature_constructor import FeatureConstructor
 
 
 class FourierBasis(FeatureConstructor):

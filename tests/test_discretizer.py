@@ -1,6 +1,6 @@
 import gym
 
-from features.discretizer import Discretizer
+from src.features.discretizer import Discretizer
 
 
 class TestDiscretizer:

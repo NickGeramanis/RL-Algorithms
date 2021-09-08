@@ -1,7 +1,7 @@
 import gym
 import numpy as np
 
-from features.tile_coding import TileCoding
+from src.features.tile_coding import TileCoding
 
 
 class TestTileCoding:

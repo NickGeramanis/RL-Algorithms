@@ -4,33 +4,33 @@ import random
 import numpy as np
 from gym import Env
 
-from features.discretizer import Discretizer
-from rl_algorithms.rl_algorithm import RLAlgorithm
+from src.features.feature_constructor import FeatureConstructor
+from src.algorithms.rl_algorithm import RLAlgorithm
 
 
-class TabularQLearning(RLAlgorithm):
+class LFAQLearning(RLAlgorithm):
 
     def __init__(self, env: Env, learning_rate_midpoint: int,
                  discount_factor: float, initial_learning_rate: float,
                  learning_rate_steepness: float,
-                 discretizer: Discretizer) -> None:
+                 feature_constructor: FeatureConstructor) -> None:
         RLAlgorithm.__init__(self)
         self.__env = env
         self.__discount_factor = discount_factor
         self.__initial_learning_rate = initial_learning_rate
         self.__learning_rate_steepness = learning_rate_steepness
         self.__learning_rate_midpoint = learning_rate_midpoint
-        self.__discretizer = discretizer
-        self.q_table = np.random.random(
-            (self.__discretizer.n_bins + (self.__env.action_space.n,)))
+        self.__feature_constructor = feature_constructor
+        self.weights = np.random.random(
+            (self.__feature_constructor.n_features,))
 
         self._logger.info(
-            'Tabular Q-Learning:'
+            'Q-Learning with Linear Function Approximation:'
             f'discount factor = {self.__discount_factor},'
             f'learning rate midpoint = {self.__learning_rate_midpoint},'
             f'learning rate steepness = {self.__learning_rate_steepness},'
             f'initial learning rate = {self.__initial_learning_rate}')
-        self._logger.info(self.__discretizer.info)
+        self._logger.info(self.__feature_constructor.info)
 
     def train(self, training_episodes: int) -> None:
         for episode_i in range(training_episodes):
@@ -38,9 +38,11 @@ class TabularQLearning(RLAlgorithm):
             episode_actions = 0
 
             try:
-                learning_rate = self.__initial_learning_rate / (1 + math.exp(
-                    self.__learning_rate_steepness * (
-                            episode_i - self.__learning_rate_midpoint)))
+                learning_rate = (
+                    self.__initial_learning_rate
+                    / (1 + math.exp(
+                        self.__learning_rate_steepness
+                        * (episode_i - self.__learning_rate_midpoint))))
             except OverflowError:
                 learning_rate = 0
 
@@ -50,31 +52,36 @@ class TabularQLearning(RLAlgorithm):
                 epsilon = 0
 
             done = False
-            observation = self.__env.reset()
-            current_state = self.__discretizer.get_state(observation)
+            current_state = self.__env.reset()
+            current_q_values = self.__feature_constructor.calculate_q(
+                self.weights, current_state)
 
             while not done:
                 if random.random() <= epsilon:
                     action = self.__env.action_space.sample()
                 else:
-                    action = np.argmax(self.q_table[current_state])
+                    action = np.argmax(current_q_values)
 
-                observation, reward, done, _ = self.__env.step(action)
+                next_state, reward, done, _ = self.__env.step(action)
                 episode_reward += reward
                 episode_actions += 1
-                next_state = self.__discretizer.get_state(observation)
+                next_q_values = self.__feature_constructor.calculate_q(
+                    self.weights, next_state)
 
                 if done:
                     td_target = reward
                 else:
                     td_target = reward + (self.__discount_factor
-                                          * max(self.q_table[next_state]))
+                                          * np.max(next_q_values))
 
-                td_error = td_target - self.q_table[current_state + (action,)]
-                self.q_table[current_state +
-                             (action,)] += learning_rate * td_error
+                td_error = td_target - current_q_values[action]
+
+                self.weights += (learning_rate * td_error
+                                 * self.__feature_constructor.get_features(
+                                     current_state, action))
 
                 current_state = next_state
+                current_q_values = next_q_values
 
             self._logger.info(f'episode={episode_i}|reward={episode_reward}'
                               f'|actions={episode_actions}')
@@ -83,16 +90,17 @@ class TabularQLearning(RLAlgorithm):
         for episode_i in range(episodes):
             episode_reward = 0.0
             episode_actions = 0
-            observation = self.__env.reset()
+            state = self.__env.reset()
             done = False
 
             while not done:
                 if render:
                     self.__env.render()
 
-                state = self.__discretizer.get_state(observation)
-                action = np.argmax(self.q_table[state])
-                observation, reward, done, _ = self.__env.step(action)
+                action = np.argmax(
+                    self.__feature_constructor.calculate_q(
+                        self.weights, state))
+                state, reward, done, _ = self.__env.step(action)
                 episode_reward += reward
                 episode_actions += 1
 

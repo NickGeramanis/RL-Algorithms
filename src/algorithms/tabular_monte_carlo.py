@@ -3,8 +3,8 @@ import random
 import numpy as np
 from gym import Env
 
-from features.discretizer import Discretizer
-from rl_algorithms.rl_algorithm import RLAlgorithm
+from src.features.discretizer import Discretizer
+from src.algorithms.rl_algorithm import RLAlgorithm
 
 
 class TabularMonteCarlo(RLAlgorithm):

@@ -63,7 +63,7 @@ In order to test the algorithms you must import the appropriate package:
 For example:
 
 ```python
-from rl_algorithms.tabular_q_learning import TabularQLearning
+from src.algorithms.tabular_q_learning import TabularQLearning
 ```
 
 

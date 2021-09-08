@@ -1,7 +1,7 @@
-from rl_algorithms.rl_algorithm import RLAlgorithm
+from src.algorithms.rl_algorithm import RLAlgorithm
 
 
-class PolicyIteration(RLAlgorithm):
+class ValueIteration(RLAlgorithm):
 
     def __init__(self) -> None:
         RLAlgorithm.__init__(self)

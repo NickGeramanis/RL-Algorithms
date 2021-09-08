@@ -1,8 +1,8 @@
 import numpy as np
 from gym import Env
 
-from features.feature_constructor import FeatureConstructor
-from rl_algorithms.rl_algorithm import RLAlgorithm
+from src.features.feature_constructor import FeatureConstructor
+from src.algorithms.rl_algorithm import RLAlgorithm
 
 
 class LSPI(RLAlgorithm):
