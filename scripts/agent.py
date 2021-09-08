@@ -72,27 +72,27 @@ def main():
         env.action_space.n, n_tilings, tiles_per_dimension,
         env.observation_space, displacement_vector)
 
-    n_order = 1
-    feature_constructor = Polynomials(
-        env.action_space.n, n_order, n_dimensions)
-
-    n_order = 2
-    feature_constructor = FourierBasis(
-        env.action_space.n, n_order, env.observation_space)
-    denominator = np.sum(
-        np.power(feature_constructor.integer_vector, 2), axis=1)
-    denominator = np.where(denominator == 0, 1, denominator)
-    denominator = np.repeat(denominator, env.action_space.n)
-    initial_learning_rate = 0.01 / denominator
-
-    rbf_standard_deviation = 0.25
-    centers_per_dimension = [
-        [0.2, 0.4, 0.6, 0.8],
-        [0.2, 0.4, 0.6, 0.8]
-    ]
-    feature_constructor = RBF(
-        env.action_space.n, env.observation_space, centers_per_dimension,
-        rbf_standard_deviation)
+    # n_order = 1
+    # feature_constructor = Polynomials(
+    #     env.action_space.n, n_order, n_dimensions)
+    #
+    # n_order = 2
+    # feature_constructor = FourierBasis(
+    #     env.action_space.n, n_order, env.observation_space)
+    # denominator = np.sum(
+    #     np.power(feature_constructor.integer_vector, 2), axis=1)
+    # denominator = np.where(denominator == 0, 1, denominator)
+    # denominator = np.repeat(denominator, env.action_space.n)
+    # initial_learning_rate = 0.01 / denominator
+    #
+    # rbf_standard_deviation = 0.25
+    # centers_per_dimension = [
+    #     [0.2, 0.4, 0.6, 0.8],
+    #     [0.2, 0.4, 0.6, 0.8]
+    # ]
+    # feature_constructor = RBF(
+    #     env.action_space.n, env.observation_space, centers_per_dimension,
+    #     rbf_standard_deviation)
 
     lfa_sarsa = LFASARSA(
         env, learning_rate_midpoint, discount_factor, initial_learning_rate,
