@@ -1,4 +1,5 @@
-import gym
+import numpy as np
+from gym import spaces
 
 from src.features.discretizer import Discretizer
 
@@ -6,11 +7,13 @@ from src.features.discretizer import Discretizer
 class TestDiscretizer:
 
     def test_get_state(self):
-        env_name = 'MountainCar-v0'
-        env = gym.make(env_name)
-        n_bins = (4, 19)
-        discretizer = Discretizer(n_bins, env.observation_space)
+        low = np.array([0, 0])
+        high = np.array([10, 5])
+        observation_space = spaces.Box(low=low, high=high, shape=(2,),
+                                       dtype=np.float32)
+        n_bins = (10, 5)
+        discretizer = Discretizer(n_bins, observation_space)
 
-        observation = env.reset()
+        observation = np.array([3.2, 4.2])
         state = discretizer.get_state(observation)
-        assert state == (1, 9)
+        assert state == (3, 4)
