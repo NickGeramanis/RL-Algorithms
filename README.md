@@ -1,19 +1,18 @@
 # Reinforcement Learning Algorithms
 
-This repository provides an implementation for some popular reinforcement learning algorithms that were tested with OpenAI Gym.
+This repository provides an implementation for some popular reinforcement
+learning algorithms that were tested with OpenAI Gym.
 
 ## Table of Contents
 
-
 - [Description](#description)
 - [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
+    - [Prerequisites](#prerequisites)
+    - [Installation](#installation)
 - [Usage](#usage)
 - [Status](#status)
 - [License](#license)
 - [Authors](#authors)
-
 
 ## Description
 
@@ -36,17 +35,18 @@ The following algorithms have been implemented:
 - [ ] Least-Squares Policy Iteration
 - [ ] Deep Q-Learning
 
-The features in Linear Function Approximation methods can be constructed with the following algorithms:
+The features in Linear Function Approximation methods can be constructed with
+the following algorithms:
 
 - Polynomials
 - Tile Coding
 - Radial Basis Functions
 - Fourier Basis
 
-Furthermore, `discretizer.py` implements a method to discretize continuous spaces.
+Furthermore, `discretizer.py` implements a method to discretize continuous
+spaces.
 
 ## Getting Started
-
 
 ### Prerequisites
 
@@ -55,7 +55,6 @@ The following libraries need to be installed:
 - NumPy
 - OpenAI Gym
 
-
 ### Installation
 
 In order to test the algorithms you must import the appropriate package:
@@ -63,13 +62,15 @@ In order to test the algorithms you must import the appropriate package:
 For example:
 
 ```python
+import gym
 from src.algorithms.tabular_q_learning import TabularQLearning
+from src.features.discretizer import Discretizer
 ```
-
 
 ## Usage
 
-In order to test an algorithm, you must create an instance of it with the appropriate arguments.
+In order to test an algorithm, you must create an instance of it with the
+appropriate arguments.
 
 For example:
 
@@ -81,12 +82,12 @@ initial_learning_rate = 0.1
 learning_rate_steepness = 0.01
 learning_rate_midpoint = 1500
 discount_factor = 0.99
-
 n_bins = (20, 20)
-discrete = False
-discretizer = Discretizer(discrete, n_bins, env.observation_space)
+discretizer = Discretizer(n_bins, env.observation_space)
 
-tabular_q_learning = TabularQLearning(env, learning_rate_midpoint. discount_factor, initial_learning_rate, learning_rate_steepness, discretizer)
+tabular_q_learning = TabularQLearning(
+    env, learning_rate_midpoint, discount_factor, initial_learning_rate,
+    learning_rate_steepness, discretizer)
 ```
 
 And then execute the `train()` method:
@@ -95,21 +96,22 @@ And then execute the `train()` method:
 training_episodes = 2000
 tabular_q_learning.train(training_episodes)
 ```
+
 ![Demonstration](/images/q_learning_mountain_car.gif)
 
-Different algorithms require different arguments. See `agent.py` for more information.
+Different algorithms require different arguments. See `agent.py` for more
+information.
 
-Furthermore, some unit tests have been implemented in folder `tests` to verify the proper functioning of the code.
+Furthermore, some unit tests have been implemented in folder `tests` to verify
+the proper functioning of the code.
 
 ## Status
 
 Under development.
 
-
 ## License
 
 Distributed under the GPL-3.0 License. See `LICENSE` for more information.
-
 
 ## Authors
 

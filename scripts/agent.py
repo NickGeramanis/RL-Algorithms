@@ -1,12 +1,6 @@
-#!/usr/bin/env python
 import gym
 import numpy as np
 
-from src.features.discretizer import Discretizer
-from src.features.tile_coding import TileCoding
-from src.features.rbf import RBF
-from src.features.polynomials import Polynomials
-from src.features.fourier_basis import FourierBasis
 from src.algorithms.lfa_q_lambda import LFAQLambda
 from src.algorithms.lfa_q_learning import LFAQLearning
 from src.algorithms.lfa_sarsa import LFASARSA
@@ -17,6 +11,11 @@ from src.algorithms.tabular_q_lambda import TabularQLambda
 from src.algorithms.tabular_q_learning import TabularQLearning
 from src.algorithms.tabular_sarsa import TabularSARSA
 from src.algorithms.tabular_sarsa_lambda import TabularSARSALambda
+from src.features.discretizer import Discretizer
+from src.features.fourier_basis import FourierBasis
+from src.features.polynomials import Polynomials
+from src.features.rbf import RBF
+from src.features.tile_coding import TileCoding
 
 
 def main():
@@ -72,27 +71,27 @@ def main():
         env.action_space.n, n_tilings, tiles_per_dimension,
         env.observation_space, displacement_vector)
 
-    # n_order = 1
-    # feature_constructor = Polynomials(
-    #     env.action_space.n, n_order, n_dimensions)
-    #
-    # n_order = 2
-    # feature_constructor = FourierBasis(
-    #     env.action_space.n, n_order, env.observation_space)
-    # denominator = np.sum(
-    #     np.power(feature_constructor.integer_vector, 2), axis=1)
-    # denominator = np.where(denominator == 0, 1, denominator)
-    # denominator = np.repeat(denominator, env.action_space.n)
-    # initial_learning_rate = 0.01 / denominator
-    #
-    # rbf_standard_deviation = 0.25
-    # centers_per_dimension = [
-    #     [0.2, 0.4, 0.6, 0.8],
-    #     [0.2, 0.4, 0.6, 0.8]
-    # ]
-    # feature_constructor = RBF(
-    #     env.action_space.n, env.observation_space, centers_per_dimension,
-    #     rbf_standard_deviation)
+    n_order = 1
+    feature_constructor = Polynomials(
+        env.action_space.n, n_order, n_dimensions)
+
+    n_order = 2
+    feature_constructor = FourierBasis(
+        env.action_space.n, n_order, env.observation_space)
+    denominator = np.sum(
+        np.power(feature_constructor.integer_vector, 2), axis=1)
+    denominator = np.where(denominator == 0, 1, denominator)
+    denominator = np.repeat(denominator, env.action_space.n)
+    initial_learning_rate = 0.01 / denominator
+
+    rbf_standard_deviation = 0.25
+    centers_per_dimension = [
+        [0.2, 0.4, 0.6, 0.8],
+        [0.2, 0.4, 0.6, 0.8]
+    ]
+    feature_constructor = RBF(
+        env.action_space.n, env.observation_space, centers_per_dimension,
+        rbf_standard_deviation)
 
     lfa_sarsa = LFASARSA(
         env, learning_rate_midpoint, discount_factor, initial_learning_rate,
@@ -120,8 +119,8 @@ def main():
     n_samples = 1000
     lspi = LSPI(env, discount_factor, feature_constructor)
     lspi.gather_samples(n_samples)
-    # np.save(samples_filename, lspi.sample_set, allow_pickle=True)
-    # lspi.sample_set = np.load(samples_filename, allow_pickle=True)
+    np.save(samples_filename, lspi.sample_set, allow_pickle=True)
+    lspi.sample_set = np.load(samples_filename, allow_pickle=True)
     lspi.train(training_episodes, tolerance, delta, pre_calculate_features)
     lspi.run(run_episodes)
 
