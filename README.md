@@ -57,7 +57,7 @@ The following libraries need to be installed:
 
 ### Installation
 
-In order to test the algorithms you must import the appropriate package:
+In order to test the algorithms you must import the appropriate package.
 
 For example:
 
