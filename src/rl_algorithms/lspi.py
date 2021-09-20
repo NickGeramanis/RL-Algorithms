@@ -1,5 +1,6 @@
 import numpy as np
 from gym import Env
+from typing import Tuple
 
 from src.features.feature_constructor import FeatureConstructor
 from src.rl_algorithms.rl_algorithm import RLAlgorithm
@@ -30,7 +31,7 @@ class LSPI(RLAlgorithm):
         self._logger.info(self)
 
     def gather_samples(self, n_samples: int) -> None:
-        self.__samples = np.empty((n_samples,), dtype=object)
+        self.__samples = np.empty((n_samples,), dtype=tuple)
         samples_gathered = 0
         current_state = self.__env.observation_space.sample()
         done = True

@@ -2,6 +2,7 @@ import random
 
 import numpy as np
 from gym import Env
+from typing import List
 
 from src.features.discretizer import Discretizer
 from src.rl_algorithms.rl_algorithm import RLAlgorithm
@@ -24,7 +25,7 @@ class TabularMonteCarlo(RLAlgorithm):
         self.__discretizer = discretizer
         self.__q_table = np.random.random(
             (discretizer.n_bins + (self.__env.action_space.n,)))
-        self.__returns = np.empty(self.__q_table.shape, dtype=object)
+        self.__returns = np.empty(self.__q_table.shape, dtype=list)
 
         self._logger.info(self)
 
