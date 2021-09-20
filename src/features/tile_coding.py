@@ -1,91 +1,102 @@
 from typing import List, Tuple
 
 import numpy as np
-from gym.spaces import Box
 
 from src.features.feature_constructor import FeatureConstructor
 
 
 class TileCoding(FeatureConstructor):
+    __n_tilings: int
+    __n_actions: int
+    __n_tiles_per_dimension: np.ndarray
+    __n_dimensions: int
+    __n_tiles: int
+    __tilings: np.ndarray
+    __n_features: int
 
-    def __init__(self, n_actions: int, n_tilings: int,
-                 tiles_per_dimension: List[int], observation_space: Box,
-                 displacement_vector: List[float]) -> None:
+    def __init__(self,
+                 n_actions: int,
+                 n_tilings: int,
+                 n_tiles_per_dimension: List[int],
+                 state_space_low: np.ndarray,
+                 state_space_high: np.ndarray,
+                 displacement_vector: np.ndarray) -> None:
         self.__n_tilings = n_tilings
         self.__n_actions = n_actions
-        self.__tiles_per_dimension = np.array(tiles_per_dimension) + 1
-        self.__n_dimensions = len(self.__tiles_per_dimension)
-        self.__tiles_per_tiling = np.prod(self.__tiles_per_dimension)
-        self.__n_tiles = self.__n_tilings * self.__tiles_per_tiling
+        self.__n_tiles_per_dimension = np.array(n_tiles_per_dimension) + 1
+        self.__n_dimensions = len(self.__n_tiles_per_dimension)
+        n_tiles_per_tiling = np.prod(self.__n_tiles_per_dimension)
+        self.__n_tiles = n_tilings * n_tiles_per_tiling
+        self.__tilings = self.__create_tilings(state_space_low,
+                                               state_space_high,
+                                               displacement_vector)
+        self.__n_features = self.__n_tiles * n_actions
 
-        self.__create_tilings(observation_space, displacement_vector)
+    def __create_tilings(self,
+                         state_space_low: np.ndarray,
+                         state_space_high: np.ndarray,
+                         displacement_vector: np.ndarray) -> np.ndarray:
+        width = state_space_high - state_space_low
+        tile_width = width / self.__n_tiles_per_dimension
+        tiling_offset = displacement_vector * tile_width / self.__n_tilings
 
-    def __create_tilings(self, observation_space: Box,
-                         displacement_vector: List[float]) -> None:
-        tile_width = ((observation_space.high - observation_space.low)
-                      / self.__tiles_per_dimension)
+        tilings = np.empty((self.__n_tilings, self.__n_dimensions),
+                           dtype=np.ndarray)
 
-        tiling_offset = (np.array(displacement_vector)
-                         * tile_width / float(self.__n_tilings))
+        min_value = state_space_low
+        max_value = state_space_high + tile_width
 
-        self.__tilings = np.empty((self.__n_tilings, self.__n_dimensions),
-                                  dtype=object)
+        # Create the first tile
+        for i in range(self.__n_dimensions):
+            tilings[0, i] = np.linspace(
+                min_value[i],
+                max_value[i],
+                num=self.__n_tiles_per_dimension[i] + 1)
 
-        minimum_value = observation_space.low
-        maximum_value = observation_space.high + tile_width
+        # In order to create the rest tilings,
+        # subtract the tiling offset from the previous tiling.
+        for i in range(1, self.__n_tilings):
+            for j in range(self.__n_dimensions):
+                tilings[i, j] = tilings[i - 1, j] - tiling_offset[j]
 
-        # create the first tile
-        for dimension_i in range(self.__n_dimensions):
-            self.__tilings[0, dimension_i] = np.linspace(
-                minimum_value[dimension_i], maximum_value[dimension_i],
-                self.__tiles_per_dimension[dimension_i] + 1)
+        return tilings
 
-        # subtract an offset from the previous tiling
-        # to create the rest.
-        for tiling_i in range(1, self.__n_tilings):
-            for dimension_i in range(self.__n_dimensions):
-                self.__tilings[tiling_i, dimension_i] = (
-                        self.__tilings[tiling_i - 1, dimension_i]
-                        - tiling_offset[dimension_i])
-
-    def __get_active_features(self, variable: np.ndarray) -> Tuple[int, ...]:
-        indices = np.zeros((self.__n_tilings,), object)
-        dimensions = np.append(self.__n_tilings, self.__tiles_per_dimension)
+    def __get_active_features(self, state: np.ndarray) -> Tuple[int, ...]:
+        active_features = np.zeros((self.__n_tilings,), dtype=np.ndarray)
+        dimensions = np.append(self.__n_tilings, self.__n_tiles_per_dimension)
 
         for tiling_i in range(self.__n_tilings):
             index = (tiling_i,)
-            for dimension_i in range(self.__n_dimensions):
-                index += (np.digitize(
-                    variable[dimension_i],
-                    self.__tilings[tiling_i, dimension_i]) - 1,)
+            for i in range(self.__n_dimensions):
+                index += (np.digitize(state[i],
+                                      self.__tilings[tiling_i, i]) - 1,)
 
-            for i in range(len(dimensions)):
-                indices[tiling_i] += np.prod(dimensions[i + 1:]) * index[i]
+            for j in range(len(dimensions)):
+                active_features[tiling_i] += (np.prod(dimensions[j + 1:])
+                                              * index[j])
 
-        return tuple(indices)
+        return tuple(active_features)
 
-    def calculate_q(self, weights: np.ndarray,
+    def calculate_q(self,
+                    weights: np.ndarray,
                     state: np.ndarray) -> np.ndarray:
         q = np.empty((self.__n_actions,))
         active_features = self.__get_active_features(state)
         for action in range(self.__n_actions):
             q[action] = np.sum(
                 weights[action * self.__n_tiles + active_features])
+
         return q
 
     def get_features(self, state: np.ndarray, action: int) -> np.ndarray:
-        active_features = self.__get_active_features(state)
-
         features = np.zeros((self.n_features,))
-
+        active_features = self.__get_active_features(state)
         features[action * self.__n_tiles + active_features] = 1
         return features
 
     @property
-    def n_features(self):
-        return self.__n_tiles * self.__n_actions
+    def n_features(self) -> int:
+        return self.__n_features
 
-    @property
-    def info(self):
-        return (f'Tile Coding: tilings = {self.__n_tilings},'
-                f'tiles per dimension = {self.__tiles_per_dimension}')
+    def __str__(self) -> str:
+        return f"Tile Coding: tilings = {self.__tilings}"

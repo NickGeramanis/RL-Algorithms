@@ -1,19 +1,25 @@
 import numpy as np
-from gym import spaces
+import pytest
 
 from src.features.discretizer import Discretizer
 
 
 class TestDiscretizer:
+    discretizer: Discretizer
 
-    def test_get_state(self):
-        low = np.array([0, 0])
-        high = np.array([10, 5])
-        observation_space = spaces.Box(low=low, high=high, shape=(2,),
-                                       dtype=np.float32)
+    @pytest.fixture(autouse=True)
+    def init_discretizer(self):
         n_bins = (10, 5)
-        discretizer = Discretizer(n_bins, observation_space)
+        state_space_low = np.array([0, 0])
+        state_space_high = np.array([10, 5])
+        self.discretizer = Discretizer(n_bins,
+                                       state_space_low,
+                                       state_space_high)
 
-        observation = np.array([3.2, 4.2])
-        state = discretizer.get_state(observation)
-        assert state == (3, 4)
+    def test_discretize(self):
+        state = np.array([3.2, 4.2])
+
+        discrete_state = self.discretizer.discretize(state)
+        expected_discrete_state = (3, 4)
+
+        assert expected_discrete_state == discrete_state

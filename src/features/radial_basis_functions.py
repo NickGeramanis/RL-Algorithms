@@ -1,5 +1,4 @@
 import itertools
-import math
 from typing import List
 
 import numpy as np
@@ -7,28 +6,28 @@ import numpy as np
 from src.features.feature_constructor import FeatureConstructor
 
 
-class FourierBasis(FeatureConstructor):
+class RadialBasisFunctions(FeatureConstructor):
     __n_actions: int
-    __order: int
     __state_space_low: np.ndarray
     __state_space_high: np.ndarray
+    __centers: np.ndarray
+    __variance: float
     __n_functions: int
-    __integer_vectors: List
     __n_features: int
 
     def __init__(self,
                  n_actions: int,
-                 order: int,
                  state_space_low: np.ndarray,
-                 state_space_high: np.ndarray) -> None:
+                 state_space_high: np.ndarray,
+                 centers_per_dimension: List[List[float]],
+                 standard_deviation: float) -> None:
         self.__n_actions = n_actions
-        self.__order = order
         self.__state_space_low = state_space_low
         self.__state_space_high = state_space_high
-        n_dimensions = len(state_space_high)
-        self.__n_functions = (order + 1) ** n_dimensions
-        self.__integer_vectors = list(itertools.product(np.arange(order + 1),
-                                                        repeat=n_dimensions))
+        self.__centers = np.array(
+            list(itertools.product(*centers_per_dimension)))
+        self.__variance = 2 * standard_deviation ** 2
+        self.__n_functions = self.__centers.shape[0] + 1
         self.__n_features = self.__n_functions * n_actions
 
     def calculate_q(self,
@@ -44,9 +43,11 @@ class FourierBasis(FeatureConstructor):
     def get_features(self, state: np.ndarray, action: int) -> np.ndarray:
         features = np.zeros((self.n_features,))
         norm_state = self.__normalize(state)
-        for i in range(self.__n_functions):
-            cos_term = math.pi * np.dot(norm_state, self.__integer_vectors[i])
-            features[action * self.__n_functions + i] = math.cos(cos_term)
+        features[action * self.__n_functions] = 1
+        for i in range(1, self.__n_functions):
+            numerator = np.linalg.norm(norm_state - self.__centers[i - 1]) ** 2
+            exponent = - numerator / self.__variance
+            features[action * self.__n_functions + i] = np.exp(exponent)
 
         return features
 
@@ -60,4 +61,5 @@ class FourierBasis(FeatureConstructor):
         return self.__n_features
 
     def __str__(self) -> str:
-        return f"Fourier Basis: order = {self.__order}"
+        return ("Radial Basis Function:"
+                f"centers = {self.__centers}|variance = {self.__variance}")

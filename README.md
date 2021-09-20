@@ -8,7 +8,6 @@ learning algorithms that were tested with OpenAI Gym.
 - [Description](#description)
 - [Getting Started](#getting-started)
     - [Prerequisites](#prerequisites)
-    - [Installation](#installation)
 - [Usage](#usage)
 - [Status](#status)
 - [License](#license)
@@ -55,46 +54,39 @@ The following libraries need to be installed:
 - NumPy
 - OpenAI Gym
 
-### Installation
+## Usage
 
-In order to test the algorithms you must import the appropriate package.
+In order to test an algorithm, you must first import the appropriate package
+and then create an instance of it with the appropriate arguments.
 
 For example:
 
 ```python
 import gym
-from src.algorithms.tabular_q_learning import TabularQLearning
+from src.rl_algorithms.tabular_q_learning import TabularQLearning
 from src.features.discretizer import Discretizer
-```
 
-## Usage
-
-In order to test an algorithm, you must create an instance of it with the
-appropriate arguments.
-
-For example:
-
-```python
 env_name = 'MountainCar-v0'
 env = gym.make(env_name)
 
+discount_factor = 0.99
 initial_learning_rate = 0.1
 learning_rate_steepness = 0.01
 learning_rate_midpoint = 1500
-discount_factor = 0.99
+
 n_bins = (20, 20)
-discretizer = Discretizer(n_bins, env.observation_space)
+state_space_low = env.observation_space.low
+state_space_high = env.observation_space.high
+discretizer = Discretizer(n_bins, state_space_low, state_space_high)
 
-tabular_q_learning = TabularQLearning(
-    env, learning_rate_midpoint, discount_factor, initial_learning_rate,
-    learning_rate_steepness, discretizer)
-```
-
-And then execute the `train()` method:
-
-```python
-training_episodes = 2000
-tabular_q_learning.train(training_episodes)
+tabular_q_learning = TabularQLearning(env,
+                                      discount_factor,
+                                      initial_learning_rate,
+                                      learning_rate_midpoint,
+                                      learning_rate_steepness,
+                                      discretizer)
+n_episodes = 2000
+tabular_q_learning.train(n_episodes)
 ```
 
 ![Demonstration](/images/q_learning_mountain_car.gif)
