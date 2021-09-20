@@ -4,10 +4,13 @@ from src.rl_algorithms.rl_algorithm import RLAlgorithm
 class PolicyIteration(RLAlgorithm):
 
     def __init__(self) -> None:
-        RLAlgorithm.__init__(self, 'info.log')
+        super().__init__("info.log")
 
     def train(self, n_episodes: int) -> None:
         raise NotImplementedError
 
     def run(self, n_episodes: int, render: bool = False) -> None:
         raise NotImplementedError
+
+    def __str__(self) -> str:
+        return "Policy Iteration"

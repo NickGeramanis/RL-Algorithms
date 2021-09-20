@@ -20,7 +20,7 @@ class LSPI(RLAlgorithm):
                  feature_constructor: FeatureConstructor,
                  tolerance: float,
                  delta: float) -> None:
-        RLAlgorithm.__init__(self, "info.log")
+        super().__init__("info.log")
         self.__env = env
         self.__discount_factor = discount_factor
         self.__feature_constructor = feature_constructor

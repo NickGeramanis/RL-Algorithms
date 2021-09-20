@@ -18,7 +18,7 @@ class TabularMonteCarlo(RLAlgorithm):
                  env: Env,
                  discount_factor: float,
                  discretizer: Discretizer):
-        RLAlgorithm.__init__(self, "info.log")
+        super().__init__("info.log")
         self.__env = env
         self.__discount_factor = discount_factor
         self.__discretizer = discretizer

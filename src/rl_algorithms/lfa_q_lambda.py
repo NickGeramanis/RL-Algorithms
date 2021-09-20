@@ -26,7 +26,7 @@ class LFAQLambda(RLAlgorithm):
                  learning_rate_steepness: float,
                  feature_constructor: FeatureConstructor,
                  lambda_: float) -> None:
-        RLAlgorithm.__init__(self, "info.log")
+        super().__init__("info.log")
         self.__env = env
         self.__discount_factor = discount_factor
         self.__initial_learning_rate = initial_learning_rate
