@@ -82,6 +82,8 @@
         env_name = 'MountainCar-v0' <br>
         env = gym.make(env_name) <br>
         <br>
+        n_episodes
+        <br>
         discount_factor = 0.99 <br>
         initial_learning_rate = 0.1 <br>
         learning_rate_steepness = 0.01 <br>
@@ -93,13 +95,7 @@
         discretizer = Discretizer(n_bins, state_space_low, state_space_high)
         <br>
         <br>
-        tabular_q_learning = TabularQLearning(env, <br>
-        discount_factor, <br>
-        initial_learning_rate, <br>
-        learning_rate_midpoint, <br>
-        learning_rate_steepness, <br>
-        discretizer) <br>
-        n_episodes = 2000 <br>
+        tabular_q_learning = TabularQLearning(env, discount_factor, initial_learning_rate, learning_rate_midpoint, learning_rate_steepness, discretizer) <br>
         tabular_q_learning.train(n_episodes) <br>
     </code>
     <img alt="Demonstration" src="images/q_learning_mountain_car.gif"/>
