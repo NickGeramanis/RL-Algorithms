@@ -17,8 +17,7 @@ class TestRadialBasisFunctions:
             [0.33, 0.67]
         ]
         standard_deviation = 0.1
-        self.rbf = RadialBasisFunctions(n_actions,
-                                        state_space_low,
+        self.rbf = RadialBasisFunctions(n_actions, state_space_low,
                                         state_space_high,
                                         centers_per_dimension,
                                         standard_deviation)

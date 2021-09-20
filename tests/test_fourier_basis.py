@@ -15,9 +15,7 @@ class TestFourierBasis:
         n_actions = 2
         state_space_low = np.array([0, 0])
         state_space_high = np.array([10, 5])
-        self.fourier_basis = FourierBasis(n_actions,
-                                          order,
-                                          state_space_low,
+        self.fourier_basis = FourierBasis(n_actions, order, state_space_low,
                                           state_space_high)
 
     def test_get_features(self):

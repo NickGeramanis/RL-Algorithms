@@ -16,10 +16,7 @@ class FourierBasis(FeatureConstructor):
     __integer_vectors: List
     __n_features: int
 
-    def __init__(self,
-                 n_actions: int,
-                 order: int,
-                 state_space_low: np.ndarray,
+    def __init__(self, n_actions: int, order: int, state_space_low: np.ndarray,
                  state_space_high: np.ndarray) -> None:
         self.__n_actions = n_actions
         self.__order = order
@@ -31,8 +28,7 @@ class FourierBasis(FeatureConstructor):
                                                         repeat=n_dimensions))
         self.__n_features = self.__n_functions * n_actions
 
-    def calculate_q(self,
-                    weights: np.ndarray,
+    def calculate_q(self, weights: np.ndarray,
                     state: np.ndarray) -> np.ndarray:
         q = np.empty((self.__n_actions,))
         for action in range(self.__n_actions):
@@ -60,4 +56,4 @@ class FourierBasis(FeatureConstructor):
         return self.__n_features
 
     def __str__(self) -> str:
-        return f"Fourier Basis: order = {self.__order}"
+        return f'Fourier Basis: order = {self.__order}'

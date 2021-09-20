@@ -17,14 +17,11 @@ class LFAQLearning(RLAlgorithm):
     __feature_constructor: FeatureConstructor
     __weights: np.ndarray
 
-    def __init__(self,
-                 env: Env,
-                 discount_factor: float,
-                 initial_learning_rate: float,
-                 learning_rate_midpoint: int,
+    def __init__(self, env: Env, discount_factor: float,
+                 initial_learning_rate: float, learning_rate_midpoint: int,
                  learning_rate_steepness: float,
                  feature_constructor: FeatureConstructor) -> None:
-        super().__init__("info.log")
+        super().__init__('info.log')
         self.__env = env
         self.__discount_factor = discount_factor
         self.__initial_learning_rate = initial_learning_rate
@@ -77,8 +74,7 @@ class LFAQLearning(RLAlgorithm):
                 td_error = td_target - current_q[action]
 
                 features = self.__feature_constructor.get_features(
-                    current_state,
-                    action)
+                    current_state, action)
                 self.__weights += learning_rate * td_error * features
 
                 current_state = next_state
@@ -109,9 +105,9 @@ class LFAQLearning(RLAlgorithm):
                               f'|actions={episode_actions}')
 
     def __str__(self) -> str:
-        return ("Q-Learning with Linear Function Approximation:"
-                f"discount factor={self.__discount_factor}|"
-                f"initial learning rate = {self.__initial_learning_rate}|"
-                f"learning rate midpoint = {self.__learning_rate_midpoint}|"
-                f"learning rate steepness = {self.__learning_rate_steepness}|"
-                f"{self.__feature_constructor}")
+        return ('Q-Learning with Linear Function Approximation:'
+                f'discount factor={self.__discount_factor}|'
+                f'initial learning rate = {self.__initial_learning_rate}|'
+                f'learning rate midpoint = {self.__learning_rate_midpoint}|'
+                f'learning rate steepness = {self.__learning_rate_steepness}|'
+                f'{self.__feature_constructor}')

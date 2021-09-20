@@ -1,6 +1,5 @@
 import numpy as np
 from gym import Env
-from typing import Tuple
 
 from src.features.feature_constructor import FeatureConstructor
 from src.rl_algorithms.rl_algorithm import RLAlgorithm
@@ -15,13 +14,10 @@ class LSPI(RLAlgorithm):
     __weights: np.ndarray
     __samples: np.ndarray
 
-    def __init__(self,
-                 env: Env,
-                 discount_factor: float,
-                 feature_constructor: FeatureConstructor,
-                 tolerance: float,
+    def __init__(self, env: Env, discount_factor: float,
+                 feature_constructor: FeatureConstructor, tolerance: float,
                  delta: float) -> None:
-        super().__init__("info.log")
+        super().__init__('info.log')
         self.__env = env
         self.__discount_factor = discount_factor
         self.__feature_constructor = feature_constructor
@@ -42,8 +38,8 @@ class LSPI(RLAlgorithm):
 
             action = self.__env.action_space.sample()
             next_state, reward, done, _ = self.__env.step(action)
-            self.__samples[samples_gathered] = (
-                current_state, action, reward, next_state, done)
+            self.__samples[samples_gathered] = (current_state, action, reward,
+                                                next_state, done)
             samples_gathered += 1
             current_state = next_state
 
@@ -75,8 +71,7 @@ class LSPI(RLAlgorithm):
                                                            next_state)
                 best_action = int(np.argmax(q))
                 next_features = self.__feature_constructor.get_features(
-                    next_state,
-                    best_action)
+                    next_state, best_action)
 
             current_features = features_list[i]
 
@@ -89,7 +84,7 @@ class LSPI(RLAlgorithm):
         if rank == self.__feature_constructor.n_features:
             a_inverse = np.linalg.inv(a)
         else:
-            self._logger.warning(f"A is not full rank (rank={rank})")
+            self._logger.warning(f'A is not full rank (rank={rank})')
             u, s, vh = np.linalg.svd(a)
             s = np.diag(s)
             a_inverse = np.matmul(np.matmul(vh.T, np.linalg.pinv(s)), u.T)
@@ -106,8 +101,8 @@ class LSPI(RLAlgorithm):
             new_weights = self.__lstdq(features_list)
 
             weights_difference = np.linalg.norm(new_weights - self.__weights)
-            self._logger.info(f"episode={episode_i}|"
-                              f"weights_difference={weights_difference}")
+            self._logger.info(f'episode={episode_i}|'
+                              f'weights_difference={weights_difference}')
 
             if weights_difference <= self.__tolerance:
                 break
@@ -130,9 +125,9 @@ class LSPI(RLAlgorithm):
                 episode_reward += reward
                 episode_actions += 1
 
-            self._logger.info(f"episode={episode_i}|reward={episode_reward}"
-                              f"|actions={episode_actions}")
+            self._logger.info(f'episode={episode_i}|reward={episode_reward}'
+                              f'|actions={episode_actions}')
 
     def __str__(self) -> str:
-        return (f"LSPI: discount factor = {self.__discount_factor}|"
-                f"{self.__feature_constructor}")
+        return (f'LSPI: discount factor = {self.__discount_factor}|'
+                f'{self.__feature_constructor}')

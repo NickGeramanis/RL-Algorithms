@@ -4,7 +4,7 @@ from src.rl_algorithms.rl_algorithm import RLAlgorithm
 class PolicyIteration(RLAlgorithm):
 
     def __init__(self) -> None:
-        super().__init__("info.log")
+        super().__init__('info.log')
 
     def train(self, n_episodes: int) -> None:
         raise NotImplementedError
@@ -13,4 +13,4 @@ class PolicyIteration(RLAlgorithm):
         raise NotImplementedError
 
     def __str__(self) -> str:
-        return "Policy Iteration"
+        return 'Policy Iteration'

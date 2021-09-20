@@ -69,6 +69,8 @@ from src.features.discretizer import Discretizer
 env_name = 'MountainCar-v0'
 env = gym.make(env_name)
 
+n_episodes = 2000
+
 discount_factor = 0.99
 initial_learning_rate = 0.1
 learning_rate_steepness = 0.01
@@ -79,13 +81,10 @@ state_space_low = env.observation_space.low
 state_space_high = env.observation_space.high
 discretizer = Discretizer(n_bins, state_space_low, state_space_high)
 
-tabular_q_learning = TabularQLearning(env,
-                                      discount_factor,
+tabular_q_learning = TabularQLearning(env, discount_factor,
                                       initial_learning_rate,
                                       learning_rate_midpoint,
-                                      learning_rate_steepness,
-                                      discretizer)
-n_episodes = 2000
+                                      learning_rate_steepness, discretizer)
 tabular_q_learning.train(n_episodes)
 ```
 

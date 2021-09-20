@@ -2,7 +2,6 @@ import random
 
 import numpy as np
 from gym import Env
-from typing import List
 
 from src.features.discretizer import Discretizer
 from src.rl_algorithms.rl_algorithm import RLAlgorithm
@@ -15,11 +14,9 @@ class TabularMonteCarlo(RLAlgorithm):
     __q_table: np.ndarray
     __returns: np.ndarray
 
-    def __init__(self,
-                 env: Env,
-                 discount_factor: float,
-                 discretizer: Discretizer):
-        super().__init__("info.log")
+    def __init__(self, env: Env, discount_factor: float,
+                 discretizer: Discretizer) -> None:
+        super().__init__('info.log')
         self.__env = env
         self.__discount_factor = discount_factor
         self.__discretizer = discretizer
@@ -56,8 +53,8 @@ class TabularMonteCarlo(RLAlgorithm):
 
                 samples.append((state, action, reward))
 
-            self._logger.info(f"episode={episode_i}|reward={episode_reward}|"
-                              f"actions={episode_actions}")
+            self._logger.info(f'episode={episode_i}|reward={episode_reward}|'
+                              f'actions={episode_actions}')
 
             return_ = 0
             processed_samples = []
@@ -96,10 +93,10 @@ class TabularMonteCarlo(RLAlgorithm):
                 episode_reward += reward
                 episode_actions += 1
 
-            self._logger.info(f"episode={episode_i}|reward={episode_reward}|"
-                              f"actions={episode_actions}")
+            self._logger.info(f'episode={episode_i}|reward={episode_reward}|'
+                              f'actions={episode_actions}')
 
     def __str__(self) -> str:
-        return ("Tabular Monte Carlo: "
-                f"discount factor = {self.__discount_factor}|"
-                f"{self.__discretizer}")
+        return ('Tabular Monte Carlo: '
+                f'discount factor = {self.__discount_factor}|'
+                f'{self.__discretizer}')

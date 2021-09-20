@@ -21,8 +21,7 @@ class Polynomials(FeatureConstructor):
                                                   repeat=n_dimensions))
         self.__n_features = self.__n_polynomials * n_actions
 
-    def calculate_q(self,
-                    weights: np.ndarray,
+    def calculate_q(self, weights: np.ndarray,
                     state: np.ndarray) -> np.ndarray:
         q = np.empty((self.__n_actions,))
         for action in range(self.__n_actions):
@@ -44,4 +43,4 @@ class Polynomials(FeatureConstructor):
         return self.__n_features
 
     def __str__(self) -> str:
-        return f"Polynomials: order = {self.__order}"
+        return f'Polynomials: order = {self.__order}'

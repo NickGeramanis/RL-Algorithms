@@ -18,15 +18,11 @@ class TabularQLambda(RLAlgorithm):
     __lambda: float
     __q_table: np.ndarray
 
-    def __init__(self,
-                 env: Env,
-                 discount_factor: float,
-                 initial_learning_rate: float,
-                 learning_rate_midpoint: int,
-                 learning_rate_steepness: float,
-                 discretizer: Discretizer,
+    def __init__(self, env: Env, discount_factor: float,
+                 initial_learning_rate: float, learning_rate_midpoint: int,
+                 learning_rate_steepness: float, discretizer: Discretizer,
                  lambda_: float) -> None:
-        super().__init__("info.log")
+        super().__init__('info.log')
         self.__env = env
         self.__discount_factor = discount_factor
         self.__initial_learning_rate = initial_learning_rate
@@ -107,8 +103,8 @@ class TabularQLambda(RLAlgorithm):
                 current_state = next_state
                 current_action = next_action
 
-            self._logger.info(f"episode={episode_i}|reward={episode_reward}"
-                              f"|actions={episode_actions}")
+            self._logger.info(f'episode={episode_i}|reward={episode_reward}'
+                              f'|actions={episode_actions}')
 
     def run(self, n_episodes: int, render: bool = False) -> None:
         for episode_i in range(n_episodes):
@@ -127,14 +123,14 @@ class TabularQLambda(RLAlgorithm):
                 episode_reward += reward
                 episode_actions += 1
 
-            self._logger.info(f"episode={episode_i}|reward={episode_reward}"
-                              f"|actions={episode_actions}")
+            self._logger.info(f'episode={episode_i}|reward={episode_reward}'
+                              f'|actions={episode_actions}')
 
     def __str__(self) -> str:
-        return ("Tabular Q(lambda):"
-                f"discount factor = {self.__discount_factor}|"
-                f"initial learning rate = {self.__initial_learning_rate}"
-                f"learning rate midpoint = {self.__learning_rate_midpoint}|"
-                f"learning rate steepness = {self.__learning_rate_steepness}|"
-                f"{self.__discretizer}|"
-                f"lambda = {self.__lambda}")
+        return ('Tabular Q(lambda):'
+                f'discount factor = {self.__discount_factor}|'
+                f'initial learning rate = {self.__initial_learning_rate}'
+                f'learning rate midpoint = {self.__learning_rate_midpoint}|'
+                f'learning rate steepness = {self.__learning_rate_steepness}|'
+                f'{self.__discretizer}|'
+                f'lambda = {self.__lambda}')

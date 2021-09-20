@@ -18,15 +18,12 @@ class LFAQLambda(RLAlgorithm):
     __lambda: float
     __weights: np.ndarray
 
-    def __init__(self,
-                 env: Env,
-                 discount_factor: float,
-                 initial_learning_rate: float,
-                 learning_rate_midpoint: int,
+    def __init__(self, env: Env, discount_factor: float,
+                 initial_learning_rate: float, learning_rate_midpoint: int,
                  learning_rate_steepness: float,
                  feature_constructor: FeatureConstructor,
                  lambda_: float) -> None:
-        super().__init__("info.log")
+        super().__init__('info.log')
         self.__env = env
         self.__discount_factor = discount_factor
         self.__initial_learning_rate = initial_learning_rate
@@ -94,8 +91,7 @@ class LFAQLambda(RLAlgorithm):
 
                 if best_action == next_action:
                     features = self.__feature_constructor.get_features(
-                        current_state,
-                        current_action)
+                        current_state, current_action)
                     eligibility_traces = (self.__discount_factor
                                           * self.__lambda
                                           * eligibility_traces
@@ -109,8 +105,8 @@ class LFAQLambda(RLAlgorithm):
                 current_action = next_action
                 current_q = next_q
 
-            self._logger.info(f"episode={i}|reward={episode_reward}"
-                              f"|actions={episode_actions}")
+            self._logger.info(f'episode={i}|reward={episode_reward}'
+                              f'|actions={episode_actions}')
 
     def run(self, n_episodes: int, render: bool = False) -> None:
         for i in range(n_episodes):
@@ -130,14 +126,14 @@ class LFAQLambda(RLAlgorithm):
                 episode_reward += reward
                 episode_actions += 1
 
-            self._logger.info(f"episode={i}|reward={episode_reward}"
-                              f"|actions={episode_actions}")
+            self._logger.info(f'episode={i}|reward={episode_reward}'
+                              f'|actions={episode_actions}')
 
     def __str__(self) -> str:
-        return ("Q(lambda) with Linear Function Approximation:"
-                f"discount factor={self.__discount_factor}|"
-                f"initial learning rate = {self.__initial_learning_rate}|"
-                f"learning rate midpoint = {self.__learning_rate_midpoint}|"
-                f"learning rate steepness = {self.__learning_rate_steepness}|"
-                f"lambda = {self.__lambda}|"
-                f"{self.__feature_constructor}")
+        return ('Q(lambda) with Linear Function Approximation:'
+                f'discount factor={self.__discount_factor}|'
+                f'initial learning rate = {self.__initial_learning_rate}|'
+                f'learning rate midpoint = {self.__learning_rate_midpoint}|'
+                f'learning rate steepness = {self.__learning_rate_steepness}|'
+                f'lambda = {self.__lambda}|'
+                f'{self.__feature_constructor}')

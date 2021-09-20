@@ -7,9 +7,7 @@ class Discretizer:
     __n_bins: Tuple[int, ...]
     __bins: np.ndarray
 
-    def __init__(self,
-                 n_bins: Tuple[int, ...],
-                 state_space_low: np.ndarray,
+    def __init__(self, n_bins: Tuple[int, ...], state_space_low: np.ndarray,
                  state_space_high: np.ndarray) -> None:
         self.__n_bins = n_bins
         n_dimensions = len(n_bins)
@@ -32,4 +30,4 @@ class Discretizer:
         return self.__n_bins
 
     def __str__(self) -> str:
-        return f"Discretizer: bins = {self.__bins}"
+        return f'Discretizer: bins = {self.__bins}'

@@ -15,23 +15,20 @@ class RadialBasisFunctions(FeatureConstructor):
     __n_functions: int
     __n_features: int
 
-    def __init__(self,
-                 n_actions: int,
-                 state_space_low: np.ndarray,
+    def __init__(self, n_actions: int, state_space_low: np.ndarray,
                  state_space_high: np.ndarray,
                  centers_per_dimension: List[List[float]],
                  standard_deviation: float) -> None:
         self.__n_actions = n_actions
         self.__state_space_low = state_space_low
         self.__state_space_high = state_space_high
-        self.__centers = np.array(
-            list(itertools.product(*centers_per_dimension)))
+        self.__centers = np.array(list(
+            itertools.product(*centers_per_dimension)))
         self.__variance = 2 * standard_deviation ** 2
         self.__n_functions = self.__centers.shape[0] + 1
         self.__n_features = self.__n_functions * n_actions
 
-    def calculate_q(self,
-                    weights: np.ndarray,
+    def calculate_q(self,weights: np.ndarray,
                     state: np.ndarray) -> np.ndarray:
         q = np.empty((self.__n_actions,))
         for action in range(self.__n_actions):
@@ -61,5 +58,5 @@ class RadialBasisFunctions(FeatureConstructor):
         return self.__n_features
 
     def __str__(self) -> str:
-        return ("Radial Basis Function:"
-                f"centers = {self.__centers}|variance = {self.__variance}")
+        return ('Radial Basis Function:'
+                f'centers = {self.__centers}|variance = {self.__variance}')

@@ -1,16 +1,17 @@
 from abc import ABC, abstractmethod
 
-from numpy import ndarray
+import numpy as np
 
 
 class FeatureConstructor(ABC):
 
     @abstractmethod
-    def calculate_q(self, weights: ndarray, state: ndarray) -> ndarray:
+    def calculate_q(self, weights: np.ndarray,
+                    state: np.ndarray) -> np.ndarray:
         pass
 
     @abstractmethod
-    def get_features(self, state: ndarray, action: int) -> ndarray:
+    def get_features(self, state: np.ndarray, action: int) -> np.ndarray:
         pass
 
     @property

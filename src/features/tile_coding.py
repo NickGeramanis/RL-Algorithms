@@ -14,11 +14,8 @@ class TileCoding(FeatureConstructor):
     __tilings: np.ndarray
     __n_features: int
 
-    def __init__(self,
-                 n_actions: int,
-                 n_tilings: int,
-                 n_tiles_per_dimension: List[int],
-                 state_space_low: np.ndarray,
+    def __init__(self, n_actions: int, n_tilings: int,
+                 n_tiles_per_dimension: List[int], state_space_low: np.ndarray,
                  state_space_high: np.ndarray,
                  displacement_vector: np.ndarray) -> None:
         self.__n_tilings = n_tilings
@@ -32,8 +29,7 @@ class TileCoding(FeatureConstructor):
                                                displacement_vector)
         self.__n_features = self.__n_tiles * n_actions
 
-    def __create_tilings(self,
-                         state_space_low: np.ndarray,
+    def __create_tilings(self, state_space_low: np.ndarray,
                          state_space_high: np.ndarray,
                          displacement_vector: np.ndarray) -> np.ndarray:
         width = state_space_high - state_space_low
@@ -49,8 +45,7 @@ class TileCoding(FeatureConstructor):
         # Create the first tile
         for i in range(self.__n_dimensions):
             tilings[0, i] = np.linspace(
-                min_value[i],
-                max_value[i],
+                min_value[i], max_value[i],
                 num=self.__n_tiles_per_dimension[i] + 1)
 
         # In order to create the rest tilings,
@@ -68,8 +63,8 @@ class TileCoding(FeatureConstructor):
         for tiling_i in range(self.__n_tilings):
             index = (tiling_i,)
             for i in range(self.__n_dimensions):
-                index += (np.digitize(state[i],
-                                      self.__tilings[tiling_i, i]) - 1,)
+                index += (
+                    np.digitize(state[i], self.__tilings[tiling_i, i]) - 1,)
 
             for j in range(len(dimensions)):
                 active_features[tiling_i] += (np.prod(dimensions[j + 1:])
@@ -77,8 +72,7 @@ class TileCoding(FeatureConstructor):
 
         return tuple(active_features)
 
-    def calculate_q(self,
-                    weights: np.ndarray,
+    def calculate_q(self, weights: np.ndarray,
                     state: np.ndarray) -> np.ndarray:
         q = np.empty((self.__n_actions,))
         active_features = self.__get_active_features(state)
@@ -99,4 +93,4 @@ class TileCoding(FeatureConstructor):
         return self.__n_features
 
     def __str__(self) -> str:
-        return f"Tile Coding: tilings = {self.__tilings}"
+        return f'Tile Coding: tilings = {self.__tilings}'

@@ -15,12 +15,9 @@ class TestTileCoding:
         n_actions = 2
         state_space_low = np.array([0, 0])
         state_space_high = np.array([10, 5])
-        self.tile_coding = TileCoding(n_actions,
-                                      n_tilings,
-                                      n_tiles_per_dimension,
-                                      state_space_low,
-                                      state_space_high,
-                                      displacement_vector)
+        self.tile_coding = TileCoding(n_actions, n_tilings,
+                                      n_tiles_per_dimension, state_space_low,
+                                      state_space_high, displacement_vector)
 
     def test_get_features(self):
         state = np.array([3, 2])

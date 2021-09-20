@@ -12,8 +12,7 @@ class TestDiscretizer:
         n_bins = (10, 5)
         state_space_low = np.array([0, 0])
         state_space_high = np.array([10, 5])
-        self.discretizer = Discretizer(n_bins,
-                                       state_space_low,
+        self.discretizer = Discretizer(n_bins, state_space_low,
                                        state_space_high)
 
     def test_discretize(self):
