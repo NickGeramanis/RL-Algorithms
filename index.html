@@ -67,46 +67,40 @@
         <li>NumPy</li>
         <li>OpenAI Gym</li>
     </ul>
-    <h4>Installation</h4>
-    <p>
-        In order to test the algorithms you must import the appropriate
-        package.
-    </p>
-    <p>For example:</p>
-    <code>
-        import gym
-        from src.algorithms.tabular_q_learning import TabularQLearning
-        from src.features.discretizer import Discretizer
-    </code>
     <h3 id="usage">Usage</h3>
     <p>
-        In order to test an algorithm, you must create an instance of it with
-        the appropriate arguments.
+        In order to test an algorithm, you must first import the appropriate
+        package and then create an instance of it with the appropriate
+        arguments.
     </p>
     <p>For example:</p>
     <code>
+        import gym <br>
+        from src.rl_algorithms.tabular_q_learning import TabularQLearning <br>
+        from src.features.discretizer import Discretizer <br>
+        <br>
         env_name = 'MountainCar-v0' <br>
         env = gym.make(env_name) <br>
         <br>
+        discount_factor = 0.99 <br>
         initial_learning_rate = 0.1 <br>
         learning_rate_steepness = 0.01 <br>
         learning_rate_midpoint = 1500 <br>
-        discount_factor = 0.99 <br>
+        <br>
         n_bins = (20, 20) <br>
-        discretizer = Discretizer(n_bins, env.observation_space) <br>
+        state_space_low = env.observation_space.low <br>
+        state_space_high = env.observation_space.high <br>
+        discretizer = Discretizer(n_bins, state_space_low, state_space_high)
         <br>
-        tabular_q_learning = TabularQLearning( <br>
-        env, learning_rate_midpoint, discount_factor, initial_learning_rate,
         <br>
-        learning_rate_steepness, discretizer) <br>
-    </code>
-    <p>And then execute the
-        <quote>train()</quote>
-        method:
-    </p>
-    <code>
-        training_episodes = 2000 <br>
-        tabular_q_learning.train(training_episodes)
+        tabular_q_learning = TabularQLearning(env, <br>
+        discount_factor, <br>
+        initial_learning_rate, <br>
+        learning_rate_midpoint, <br>
+        learning_rate_steepness, <br>
+        discretizer) <br>
+        n_episodes = 2000 <br>
+        tabular_q_learning.train(n_episodes) <br>
     </code>
     <img alt="Demonstration" src="images/q_learning_mountain_car.gif"/>
     <p>
