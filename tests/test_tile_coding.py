@@ -36,7 +36,7 @@ class TestTileCoding:
                              0, 0, 0,
                              0, 0, 0]
 
-        assert (expected_features == features).all()
+        assert (features == expected_features).all()
 
     def test_calculate_q(self):
         state = np.array([3, 2])
@@ -45,4 +45,4 @@ class TestTileCoding:
         q = self.tile_coding.calculate_q(weights, state)
         expected_q = [0 + 13, 18 + 31]
 
-        assert (expected_q == q).all()
+        assert (q == expected_q).all()

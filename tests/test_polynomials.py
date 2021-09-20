@@ -21,7 +21,7 @@ class TestPolynomials:
         expected_features = [1, 2, 3, 6,
                              0, 0, 0, 0]
 
-        assert (expected_features == features).all()
+        assert (features == expected_features).all()
 
     def test_calculate_q(self):
         state = np.array([3, 2])
@@ -31,4 +31,4 @@ class TestPolynomials:
         expected_q = [0 * 1 + 1 * 2 + 2 * 3 + 3 * 6,
                       4 * 1 + 5 * 2 + 6 * 3 + 7 * 6]
 
-        assert (expected_q == q).all()
+        assert (q == expected_q).all()

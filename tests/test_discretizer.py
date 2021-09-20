@@ -19,6 +19,5 @@ class TestDiscretizer:
         state = np.array([3.2, 4.2])
 
         discrete_state = self.discretizer.discretize(state)
-        expected_discrete_state = (3, 4)
 
-        assert expected_discrete_state == discrete_state
+        assert discrete_state == (3, 4)
