@@ -13,7 +13,8 @@ class RLAlgorithm(ABC):
 
         if not self._logger.hasHandlers():
             log_formatter = logging.Formatter(
-                '%(asctime)s %(name)s %(levelname)s %(message)s')
+                fmt='%(asctime)s %(levelname)s %(message)s',
+                datefmt='%d-%m-%Y %H:%M:%S')
 
             file_handler = logging.FileHandler(log_filename)
             file_handler.setFormatter(log_formatter)

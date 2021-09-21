@@ -2,3 +2,8 @@ numpy
 gym
 pytest
 coverage
+pylint
+mypy
+pycodestyle
+autopep8
+isort
