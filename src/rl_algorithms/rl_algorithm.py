@@ -6,9 +6,9 @@ class RLAlgorithm(ABC):
     _logger: logging.Logger
 
     def __init__(self, lof_filename: str) -> None:
-        self.__setup_logger(lof_filename)
+        self.__init_logger(lof_filename)
 
-    def __setup_logger(self, log_filename: str) -> None:
+    def __init_logger(self, log_filename: str) -> None:
         self._logger = logging.getLogger(__name__)
 
         if not self._logger.hasHandlers():
